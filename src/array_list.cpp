@@ -12,12 +12,18 @@ ArrayList::ArrayList(int capacity) : capacity_{capacity} {
   if (capacity <= 0) {
     throw std::invalid_argument("ArrayList::capacity must be positive");
   }
+  capacity_ = capacity;
+  size_ = 0;
+  data_ = new Element[capacity];
 
+  std::fill(data_, data_+capacity, Element::UNINITIALIZED);
   // Tip 1: используйте std::fill для заполнения выделенных ячеек массива значением Element::UNINITIALIZED
   // здесь должен быть ваш код ...
 }
 
 ArrayList::~ArrayList() {
+  delete[] data_;
+  data_ = nullptr;
   // Tip 1: высвободите выделенную память
   // Tip 2: не забудьте про логическую целостность объекта (инвариантность)
 }
@@ -28,6 +34,11 @@ void ArrayList::Add(Element e) {
 
   assert(size_ < capacity_);  // я здесь, чтобы не дать тебе сойти с правильного пути
 
+  if (size_ == capacity_){
+    resize(capacity_+kCapacityGrowthCoefficient);
+  }
+  data_[size_] = e;
+  size_++;
   // напишите свой код после расширения емкости массива здесь ...
 }
 
@@ -39,11 +50,16 @@ void ArrayList::Insert(int index, Element e) {
 
   // Tip 1: используйте метод resize(new_capacity) для расширения емкости массива
   // напишите свой код здесь ...
-
+  if (size_ == capacity_){
+    resize(size_+kCapacityGrowthCoefficient);
+  }
   assert(size_ < capacity_);  // я ни в коем случае не дам вам совершить ошибку всей вашей жизни
 
   // Tip 2: для свдига элементов вправо можете использовать std::copy
   // напишите свой код после расширения емкости массива здесь ...
+  std::copy(data_+index,data_+size_, data_+size_+1);
+  data_[index] = e;
+  size_++;
 }
 
 void ArrayList::Set(int index, Element value) {
@@ -54,25 +70,36 @@ void ArrayList::Set(int index, Element value) {
 Element ArrayList::Remove(int index) {
   internal::check_out_of_range(index, 0, size_);
 
+  Element element_at = data_[index];
+
   // Tip 1: можете использовать std::copy для сдвига элементов влево
+  std::copy(data_+index+1, data_+size_, data_+index );
   // Tip 2: не забудьте задать значение Element::UNINITIALIZED освободившейся ячейке
+  data_[size_] = Element::UNINITIALIZED;
+  size_--;
   // напишите свой код здесь ...
-  return {};
+  return element_at;
 }
 
 void ArrayList::Clear() {
   // Tip 1: можете использовать std::fill для заполнения ячеек массива значением  Element::UNINITIALIZED
-  // напишите свой код здесь ...
+  // напишите свой код здесь ..
+  std::fill(data_, data_+size_, Element::UNINITIALIZED);
+  size_ = 0;
 }
 
 Element ArrayList::Get(int index) const {
   internal::check_out_of_range(index, 0, size_);
   // напишите свой код здесь ...
-  return {};
+  return data_[index];
 }
 
 int ArrayList::IndexOf(Element e) const {
-  // напишите свой код здесь ...
+  for (int i = 0; i < size_; ++i) {
+    if (data_[i] == e){
+      return i;
+    }
+  }
   return {};
 }
 
