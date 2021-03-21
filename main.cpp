@@ -11,5 +11,17 @@ int main(int argc, char **argv) {
   auto array_list = new ArrayList();
 
   delete array_list;
+
+  auto linked_list = new LinkedList();
+
+  linked_list->Add(Element::DRAGON_BALL);
+  linked_list->Add(Element::BEAUTIFUL_FLOWERS);
+  linked_list->Insert(1, Element::CHERRY_PIE);
+
+  bool result = Element::CHERRY_PIE == linked_list->Get(1);
+  if (result){
+    std::cout << "OK";
+  }
+  delete linked_list;
   return 0;
 }
