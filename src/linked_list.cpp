@@ -89,7 +89,7 @@ Element LinkedList::Remove(int index) {
   removed_node = previous_node->next;
   removed_element = removed_node->data;
   previous_node->next = removed_node->next;
-
+  delete removed_node;
   size_--;
 
   return removed_element;
@@ -109,6 +109,7 @@ void LinkedList::Clear() {
     node = next_node;
     next_node = node->next;
   }
+  delete node;
 
   head_ = nullptr;
   tail_ = nullptr;
